@@ -157,7 +157,6 @@ pub struct WindowInfo {
 pub struct Windows {
     pub current: Option<ObjectId>,
     pub windows: HashMap<ZwlrForeignToplevelHandleV1, WindowInfo>,
-    pub ready: bool,
 }
 
 impl Windows {
