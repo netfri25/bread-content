@@ -13,5 +13,5 @@ cargo install --git https://github.com/netfri25/bread-content
 intended to be used with [bread](https://github.com/netfri25/bread)
 
 ```shell
-bread-content | bread
+bread-content | bread --font "Iosevka-Custom"
 ```
