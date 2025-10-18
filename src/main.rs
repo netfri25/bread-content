@@ -242,6 +242,14 @@ impl Dispatch<ZwlrForeignToplevelHandleV1, ()> for Windows {
                 }
             }
 
+            zwlr_foreign_toplevel_handle_v1::Event::Closed => {
+                let id: &ObjectId = proxy.borrow();
+                windows.windows.remove(id);
+                if windows.current.as_ref() == Some(id) {
+                    windows.current = None;
+                }
+            }
+
             _ => {}
         }
     }
