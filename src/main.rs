@@ -31,6 +31,7 @@ pub const HEIGHT: f32 = 24.;
 
 const INTERVAL: Duration = Duration::from_secs(2);
 const WAYLAND_TOKEN: mio::Token = mio::Token(1);
+const TITLE_LIMIT: usize = 80;
 
 pub static SYS: LazyLock<Mutex<System>> = LazyLock::new(Default::default);
 
@@ -138,8 +139,15 @@ fn main() {
 
         // write the new focused window, if exists
         if let Some((app_id, title)) = windows.current_info() {
-            let data = AlignLeft.chain(label(app_id)).chain(reset_fg()).chain(": ").chain(title);
+            let data = AlignLeft.chain(label(app_id)).chain(reset_fg()).chain(": ");
             write!(output, "{}", data).unwrap();
+
+            if app_id.len() + title.len() > TITLE_LIMIT {
+                output.push_str(&title[..TITLE_LIMIT.saturating_sub(app_id.len())]);
+                output.push_str("...");
+            } else {
+                output.push_str(title);
+            }
         }
 
         // write out everything
