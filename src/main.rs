@@ -143,7 +143,12 @@ fn main() {
             write!(output, "{}", data).unwrap();
 
             if app_id.len() + title.len() > TITLE_LIMIT {
-                output.push_str(&title[..TITLE_LIMIT.saturating_sub(app_id.len())]);
+                let mut limit = TITLE_LIMIT - app_id.len();
+                while !title.is_char_boundary(limit) {
+                    limit -= 1;
+                }
+
+                output.push_str(&title[..limit]);
                 output.push_str("...");
             } else {
                 output.push_str(title);
