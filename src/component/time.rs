@@ -10,7 +10,7 @@ impl fmt::Display for Time {
 
         write!(
             f,
-            "{:02}:{:02} {} {:02}/{:02}",
+            " {:02}:{:02} {} {:02}/{:02} ",
             comps.hour, comps.min, day, comps.month_day, comps.month
         )
     }
