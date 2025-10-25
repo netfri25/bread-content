@@ -98,25 +98,28 @@ fn main() {
     let mut duration_left = Duration::ZERO;
     let mut end_of_info = 0;
 
-    loop {
-        // dispatch pending messages on queue
-        event_queue.flush().unwrap();
-        event_queue.dispatch_pending(&mut windows).unwrap();
-
-        // add the wayland socket to the polling system
+    // add the wayland socket to the polling system
+    {
         let read_guard = event_queue.prepare_read().unwrap();
         let wayland_fd = read_guard.connection_fd().as_raw_fd();
         let mut wayland_source = SourceFd(&wayland_fd);
         poll.registry()
             .register(&mut wayland_source, WAYLAND_TOKEN, Interest::READABLE)
             .unwrap();
+    }
+
+
+    loop {
+        // dispatch pending messages on queue
+        event_queue.flush().unwrap();
+        event_queue.dispatch_pending(&mut windows).unwrap();
+
+        // start the read guard
+        let read_guard = event_queue.prepare_read().unwrap();
 
         // wait for either an event or a timeout
         events.clear();
         poll.poll(&mut events, Some(duration_left)).ok();
-
-        // remove the wayland socket from the polling system (will be added on the next iteration)
-        poll.registry().deregister(&mut wayland_source).unwrap();
 
         // if the interval has already passed, update content
         if last_update.elapsed() > duration_left {
