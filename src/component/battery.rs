@@ -31,7 +31,7 @@ impl fmt::Display for Battery {
             _ => ("?", crate::FG),
         };
 
-        let capacity_color = if capacity <= 30 {
+        let capacity_color = if capacity <= 30 && status != "Charging" {
             Color::RED
         } else {
             crate::FG
