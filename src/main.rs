@@ -31,7 +31,7 @@ pub const HEIGHT: f32 = 24.;
 
 const INTERVAL: Duration = Duration::from_secs(2);
 const WAYLAND_TOKEN: mio::Token = mio::Token(1);
-const TITLE_LIMIT: usize = 80;
+const TITLE_LIMIT: usize = 60;
 
 pub static SYS: LazyLock<Mutex<System>> = LazyLock::new(Default::default);
 
