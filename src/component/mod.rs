@@ -1,15 +1,19 @@
-use std::fmt;
+use std::str::FromStr;
+use std::{fmt, fs, io};
 
 pub mod battery;
 pub mod cpu;
+pub mod gpu;
 pub mod memory;
 pub mod temperature;
 pub mod time;
 pub mod wifi;
 
+use derive_more::Display;
+
 pub use battery::*;
 pub use cpu::*;
-use derive_more::Display;
+pub use gpu::*;
 pub use memory::*;
 pub use temperature::*;
 pub use time::*;
@@ -61,3 +65,47 @@ pub struct Ramp {
     pub w: u32,
     pub h: u32,
 }
+
+pub fn read_file<T>(path: &'static str) -> io::Result<T>
+where
+    T: FromStr,
+    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
+{
+    fs::read_to_string(path)?
+        .trim()
+        .parse()
+        .inspect_err(|e| eprintln!("failed to read {path}: {e}"))
+        .map_err(io::Error::other)
+}
+
+pub const USAGE_BG: Color = Color(0x181818);
+
+pub const USAGE_WIDTH: u32 = 4;
+
+pub const USAGE_COLORS: &[Color] = &[
+    Color(0x000000),
+    Color(0x002F44),
+    Color(0x104055),
+    Color(0x205C65),
+    Color(0x307876),
+    Color(0x419587),
+    Color(0x53B298),
+    Color(0x6AB59B),
+    Color(0x88C087),
+    Color(0xA4CC77),
+    Color(0xBFD867),
+    Color(0xD0D360),
+    Color(0xE0C855),
+    Color(0xE8B94B),
+    Color(0xE2923E),
+    Color(0xDC6B32),
+    Color(0xD54526),
+    Color(0xCD1E1A),
+    Color(0xBB1817),
+    Color(0xFF3A32),
+    Color(0xFF1F26),
+    Color(0xFF0B1A),
+    Color(0xE8001C),
+    Color(0xC4001E),
+    Color(0x9F0020),
+];

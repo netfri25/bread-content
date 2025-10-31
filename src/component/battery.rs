@@ -1,8 +1,8 @@
-use std::str::FromStr;
 use std::{fmt, fs, io};
 
 use crate::color::Color;
 use crate::component::Fg;
+use super::read_file;
 
 macro_rules! path {
     () => {
@@ -61,18 +61,6 @@ impl fmt::Display for Battery {
             )
         }
     }
-}
-
-fn read_file<T>(path: &'static str) -> io::Result<T>
-where
-    T: FromStr,
-    <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
-{
-    fs::read_to_string(path)?
-        .trim()
-        .parse()
-        .inspect_err(|e| eprintln!("failed to read {path}: {e}"))
-        .map_err(io::Error::other)
 }
 
 type State = &'static str;
