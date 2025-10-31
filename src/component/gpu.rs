@@ -1,7 +1,7 @@
 use std::fmt;
 
-use crate::component::{Bg, Fg, Ramp, read_file};
 use crate::HEIGHT;
+use crate::component::{Bg, Fg, Ramp, read_file};
 
 const PATH: &str = "/sys/class/drm/card0/device/gpu_busy_percent";
 

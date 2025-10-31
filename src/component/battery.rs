@@ -1,8 +1,8 @@
 use std::{fmt, fs, io};
 
+use super::read_file;
 use crate::color::Color;
 use crate::component::Fg;
-use super::read_file;
 
 macro_rules! path {
     () => {

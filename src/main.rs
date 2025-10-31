@@ -112,7 +112,6 @@ fn main() {
             .unwrap();
     }
 
-
     loop {
         // dispatch pending messages on queue
         event_queue.flush().unwrap();
