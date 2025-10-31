@@ -6,7 +6,7 @@ use crate::{HEIGHT, SYS};
 pub struct Cpu;
 
 impl fmt::Display for Cpu {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut sys = SYS.lock().unwrap();
         sys.refresh_cpu_usage();
         for cpu in sys.cpus() {

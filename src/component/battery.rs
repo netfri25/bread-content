@@ -20,7 +20,7 @@ const CHARGE_THRESHOLD: &str = concat!(path!(), "/charge_control_end_threshold")
 pub struct Battery;
 
 impl fmt::Display for Battery {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let capacity: u8 = read_file(CAPACITY).unwrap();
 
         let status = fs::read_to_string(STATE).unwrap();
