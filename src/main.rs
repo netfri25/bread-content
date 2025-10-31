@@ -50,6 +50,10 @@ const fn reset_bg() -> impl fmt::Display {
 fn main() {
     // the structure of the bar, excluding the focused window name
     let right = AlignRight
+        .chain(Gpu)
+        .chain(reset_fg())
+        .chain(reset_bg())
+        .chain(" ")
         .chain(Cpu)
         .chain(reset_fg())
         .chain(reset_bg())
