@@ -20,6 +20,7 @@ pub use time::*;
 pub use wifi::*;
 
 use crate::color::Color;
+use crate::HEIGHT;
 
 pub trait DisplayExt: fmt::Display {
     fn chain<T: fmt::Display>(self, other: T) -> Chain<Self, T>
@@ -78,11 +79,23 @@ where
         .map_err(io::Error::other)
 }
 
-pub const USAGE_BG: Color = Color(0x181818);
+const USAGE_BG: Color = Color(0x181818);
+const USAGE_WIDTH: u32 = 4;
 
-pub const USAGE_WIDTH: u32 = 4;
+pub fn usage_bar(usage: f32) -> impl fmt::Display {
+    let usage = usage.clamp(0., 1.);
+    let height = (usage * HEIGHT) as u32;
+    let fg = Fg(USAGE_COLORS[height as usize]);
+    let bg = Bg(USAGE_BG);
+    let ramp = Ramp {
+        w: USAGE_WIDTH,
+        h: height,
+    };
 
-pub const USAGE_COLORS: &[Color] = &[
+    fg.chain(bg).chain(ramp)
+}
+
+const USAGE_COLORS: &[Color] = &[
     Color(0x000000),
     Color(0x002F44),
     Color(0x104055),
