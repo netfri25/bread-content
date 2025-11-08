@@ -122,3 +122,7 @@ const USAGE_COLORS: &[Color] = &[
     Color(0xC4001E),
     Color(0x9F0020),
 ];
+
+#[derive(Debug, Clone, thiserror::Error)]
+pub enum Error {
+}

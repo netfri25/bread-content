@@ -50,8 +50,11 @@ const fn reset_bg() -> impl fmt::Display {
     Bg(BG)
 }
 
-fn main() {
-    // the structure of the bar, excluding the focused window name
+
+// the structure of the bar, excluding the focused window name
+fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
+    let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
+
     let right = AlignRight
         .chain(Gpu)
         .chain(reset_fg())
@@ -69,10 +72,20 @@ fn main() {
         .chain(label("WIFI ").chain(reset_fg()).chain(Wifi))
         .chain("  ")
         .chain(label("BAT ").chain(reset_fg().chain(Battery)));
-    let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
-    let bar = middle.chain(right);
+
+    Ok(middle.chain(right))
+}
+
+fn main() {
     let config = Config::parse();
 
+    let bar = match build_bar(&config) {
+        Ok(bar) => bar,
+        Err(err) => {
+            eprintln!("ERROR: {err}");
+            return;
+        }
+    };
 
     // connect to wayland
     let conn = Connection::connect_to_env().unwrap();
