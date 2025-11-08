@@ -15,3 +15,5 @@ intended to be used with [bread](https://github.com/netfri25/bread)
 ```shell
 bread-content | bread --font "Iosevka-Custom"
 ```
+
+for more configuration options, check out `bread-content --help`
