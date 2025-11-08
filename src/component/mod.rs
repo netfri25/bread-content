@@ -123,8 +123,11 @@ const USAGE_COLORS: &[Color] = &[
     Color(0x9F0020),
 ];
 
-#[derive(Debug, Clone, thiserror::Error)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error(transparent)]
     Network(#[from] wifi::NoSuchInterface),
+
+    #[error(transparent)]
+    Thermal(#[from] temperature::NoSuchThermalZone),
 }

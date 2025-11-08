@@ -64,7 +64,7 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
         .chain(reset_fg())
         .chain(reset_bg())
         .chain("  ")
-        .chain(Temperature)
+        .chain(Temperature::new(&config.thermal)?)
         .chain(reset_fg())
         .chain("  ")
         .chain(label("RAM ").chain(reset_fg()).chain(Memory))
