@@ -1,32 +1,38 @@
 use std::io::{BufRead as _, BufReader};
+use std::path::PathBuf;
 use std::{fmt, fs, io};
 
-macro_rules! interface {
-    () => {
-        "wlp98s0"
-    };
+const WIRELESS: &str = "/proc/net/wireless";
+
+pub struct Wifi<'a> {
+    interface: &'a str,
+    state_path: PathBuf,
 }
 
-const WIRELESS: &str = "/proc/net/wireless";
-const STATE: &str = concat!("/sys/class/net/", interface!(), "/operstate");
+impl<'a> Wifi<'a> {
+    pub fn new(interface: &'a str) -> Result<Self, NoSuchInterface> {
+        let state_path = PathBuf::from(format!("/sys/class/net/{interface}/operstate"));
+        state_path.exists()
+            .then_some(Self { interface, state_path })
+            .ok_or(NoSuchInterface)
+    }
+}
 
-pub struct Wifi;
-
-impl fmt::Display for Wifi {
+impl fmt::Display for Wifi<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let state = fs::read_to_string(STATE).unwrap();
+        let state = fs::read_to_string(self.state_path.as_path()).unwrap();
         let state = state.trim();
 
         if state == "down" {
             return write!(f, "{}", state);
         }
 
-        let quality = get_quality(interface!()).unwrap().unwrap_or_default();
+        let quality = get_quality(self.interface).unwrap().unwrap_or_default();
         write!(f, "{} {}", state, quality)
     }
 }
 
-fn get_quality(interface: &'static str) -> io::Result<Option<u8>> {
+fn get_quality(interface: &str) -> io::Result<Option<u8>> {
     let Some(dbm) = get_dbm(interface)? else {
         return Ok(None);
     };
@@ -38,7 +44,7 @@ fn get_quality(interface: &'static str) -> io::Result<Option<u8>> {
     Ok(Some(quality))
 }
 
-fn get_dbm(interface: &'static str) -> io::Result<Option<u8>> {
+fn get_dbm(interface: &str) -> io::Result<Option<u8>> {
     let mut file = BufReader::new(fs::File::open(WIRELESS)?);
     let mut buf = String::new();
 
@@ -71,3 +77,7 @@ fn get_dbm(interface: &'static str) -> io::Result<Option<u8>> {
 
     Ok(None)
 }
+
+#[derive(Debug, Clone, Copy, thiserror::Error)]
+#[error("no such network interface")]
+pub struct NoSuchInterface;

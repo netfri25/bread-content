@@ -6,6 +6,7 @@ use std::os::unix::prelude::AsRawFd as _;
 use std::sync::{LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
+use clap::Parser as _;
 use mio::Interest;
 use mio::unix::SourceFd;
 use sysinfo::System;
@@ -19,10 +20,12 @@ use wayland_protocols_wlr::foreign_toplevel::v1::client::zwlr_foreign_toplevel_m
     self, ZwlrForeignToplevelManagerV1,
 };
 
+mod config;
 pub mod color;
 pub mod component;
 
 use crate::color::Color;
+use crate::config::Config;
 use component::*;
 
 pub const FG: Color = Color(0x888888);
@@ -47,10 +50,13 @@ const fn reset_bg() -> impl fmt::Display {
     Bg(BG)
 }
 
-fn main() {
-    // the structure of the bar, excluding the focused window name
+
+// the structure of the bar, excluding the focused window name
+fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
+    let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
+
     let right = AlignRight
-        .chain(Gpu)
+        .chain(Gpu::new(&config.gpu)?)
         .chain(reset_fg())
         .chain(reset_bg())
         .chain(" ")
@@ -58,16 +64,28 @@ fn main() {
         .chain(reset_fg())
         .chain(reset_bg())
         .chain("  ")
-        .chain(Temperature)
+        .chain(Temperature::new(&config.thermal)?)
         .chain(reset_fg())
         .chain("  ")
         .chain(label("RAM ").chain(reset_fg()).chain(Memory))
         .chain("  ")
-        .chain(label("WIFI ").chain(reset_fg()).chain(Wifi))
+        .chain(label("WIFI ").chain(reset_fg()).chain(Wifi::new(&config.wifi)?))
         .chain("  ")
-        .chain(label("BAT ").chain(reset_fg().chain(Battery)));
-    let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
-    let bar = middle.chain(right);
+        .chain(label("BAT ").chain(reset_fg().chain(Battery::new(&config.battery)?)));
+
+    Ok(middle.chain(right))
+}
+
+fn main() {
+    let config = Config::parse();
+
+    let bar = match build_bar(&config) {
+        Ok(bar) => bar,
+        Err(err) => {
+            eprintln!("ERROR: {err}");
+            return;
+        }
+    };
 
     // connect to wayland
     let conn = Connection::connect_to_env().unwrap();

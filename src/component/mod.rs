@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::str::FromStr;
 use std::{fmt, fs, io};
 
@@ -67,15 +68,16 @@ pub struct Ramp {
     pub h: u32,
 }
 
-pub fn read_file<T>(path: &'static str) -> io::Result<T>
+pub fn read_file<T>(path: impl AsRef<Path>) -> io::Result<T>
 where
     T: FromStr,
     <T as FromStr>::Err: std::error::Error + Send + Sync + 'static,
 {
+    let path = path.as_ref();
     fs::read_to_string(path)?
         .trim()
         .parse()
-        .inspect_err(|e| eprintln!("failed to read {path}: {e}"))
+        .inspect_err(|e| eprintln!("failed to read {}: {}", path.display(), e))
         .map_err(io::Error::other)
 }
 
@@ -122,3 +124,18 @@ const USAGE_COLORS: &[Color] = &[
     Color(0xC4001E),
     Color(0x9F0020),
 ];
+
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error(transparent)]
+    Network(#[from] wifi::NoSuchInterface),
+
+    #[error(transparent)]
+    Thermal(#[from] temperature::NoSuchThermalZone),
+
+    #[error(transparent)]
+    Gpu(#[from] gpu::NoSuchCard),
+
+    #[error(transparent)]
+    Battery(#[from] battery::NoSuchBattery),
+}
