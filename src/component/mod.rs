@@ -135,4 +135,7 @@ pub enum Error {
 
     #[error(transparent)]
     Gpu(#[from] gpu::NoSuchCard),
+
+    #[error(transparent)]
+    Battery(#[from] battery::NoSuchBattery),
 }
