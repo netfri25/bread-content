@@ -20,9 +20,9 @@ use wayland_protocols_wlr::foreign_toplevel::v1::client::zwlr_foreign_toplevel_m
     self, ZwlrForeignToplevelManagerV1,
 };
 
-mod config;
 pub mod color;
 pub mod component;
+mod config;
 
 use crate::color::Color;
 use crate::config::Config;
@@ -50,7 +50,6 @@ const fn reset_bg() -> impl fmt::Display {
     Bg(BG)
 }
 
-
 // the structure of the bar, excluding the focused window name
 fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
@@ -69,7 +68,11 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
         .chain("  ")
         .chain(label("RAM ").chain(reset_fg()).chain(Memory))
         .chain("  ")
-        .chain(label("WIFI ").chain(reset_fg()).chain(Wifi::new(&config.wifi)?))
+        .chain(
+            label("WIFI ")
+                .chain(reset_fg())
+                .chain(Wifi::new(&config.wifi)?),
+        )
         .chain("  ")
         .chain(label("BAT ").chain(reset_fg().chain(Battery::new(&config.battery)?)));
 

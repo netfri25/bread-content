@@ -20,8 +20,8 @@ pub use temperature::*;
 pub use time::*;
 pub use wifi::*;
 
-use crate::color::Color;
 use crate::HEIGHT;
+use crate::color::Color;
 
 pub trait DisplayExt: fmt::Display {
     fn chain<T: fmt::Display>(self, other: T) -> Chain<Self, T>

@@ -23,7 +23,9 @@ impl Battery {
         let bat_path = PathBuf::from(format!("/sys/class/power_supply/{battery}"));
         bat_path
             .exists()
-            .then(|| Self { bat_path: RefCell::new(bat_path) })
+            .then(|| Self {
+                bat_path: RefCell::new(bat_path),
+            })
             .ok_or(NoSuchBattery)
     }
 

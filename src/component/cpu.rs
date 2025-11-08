@@ -1,7 +1,7 @@
 use std::fmt;
 
-use crate::component::usage_bar;
 use crate::SYS;
+use crate::component::usage_bar;
 
 pub struct Cpu;
 

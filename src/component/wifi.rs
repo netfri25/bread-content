@@ -12,8 +12,12 @@ pub struct Wifi<'a> {
 impl<'a> Wifi<'a> {
     pub fn new(interface: &'a str) -> Result<Self, NoSuchInterface> {
         let state_path = PathBuf::from(format!("/sys/class/net/{interface}/operstate"));
-        state_path.exists()
-            .then_some(Self { interface, state_path })
+        state_path
+            .exists()
+            .then_some(Self {
+                interface,
+                state_path,
+            })
             .ok_or(NoSuchInterface)
     }
 }

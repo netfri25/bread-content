@@ -12,5 +12,5 @@ pub struct Config {
     pub thermal: String,
 
     #[arg(short = 'w', long = "wifi", default_value = "wlp98s0")]
-    pub wifi: String
+    pub wifi: String,
 }
