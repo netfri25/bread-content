@@ -6,6 +6,7 @@ use std::os::unix::prelude::AsRawFd as _;
 use std::sync::{LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
+use clap::Parser as _;
 use mio::Interest;
 use mio::unix::SourceFd;
 use sysinfo::System;
@@ -19,10 +20,12 @@ use wayland_protocols_wlr::foreign_toplevel::v1::client::zwlr_foreign_toplevel_m
     self, ZwlrForeignToplevelManagerV1,
 };
 
+mod config;
 pub mod color;
 pub mod component;
 
 use crate::color::Color;
+use crate::config::Config;
 use component::*;
 
 pub const FG: Color = Color(0x888888);
@@ -68,6 +71,8 @@ fn main() {
         .chain(label("BAT ").chain(reset_fg().chain(Battery)));
     let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
     let bar = middle.chain(right);
+    let config = Config::parse();
+
 
     // connect to wayland
     let conn = Connection::connect_to_env().unwrap();
