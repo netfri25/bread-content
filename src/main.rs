@@ -56,7 +56,7 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
 
     let right = AlignRight
-        .chain(Gpu)
+        .chain(Gpu::new(&config.gpu)?)
         .chain(reset_fg())
         .chain(reset_bg())
         .chain(" ")
