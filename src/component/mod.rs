@@ -125,4 +125,6 @@ const USAGE_COLORS: &[Color] = &[
 
 #[derive(Debug, Clone, thiserror::Error)]
 pub enum Error {
+    #[error(transparent)]
+    Network(#[from] wifi::NoSuchInterface),
 }

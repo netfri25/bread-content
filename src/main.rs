@@ -69,7 +69,7 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
         .chain("  ")
         .chain(label("RAM ").chain(reset_fg()).chain(Memory))
         .chain("  ")
-        .chain(label("WIFI ").chain(reset_fg()).chain(Wifi))
+        .chain(label("WIFI ").chain(reset_fg()).chain(Wifi::new(&config.wifi)?))
         .chain("  ")
         .chain(label("BAT ").chain(reset_fg().chain(Battery)));
 
