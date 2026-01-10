@@ -25,14 +25,14 @@ impl Temperature {
 
 impl fmt::Display for Temperature {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // kilo-celsius
-        let value_kc: u32 = fs::read_to_string(self.temp_path.as_path())
+        // milli-celsius
+        let value_mc: u32 = fs::read_to_string(self.temp_path.as_path())
             .unwrap()
             .trim()
             .parse()
             .unwrap();
 
-        let temp = value_kc / 1000;
+        let temp = value_mc / 1000;
 
         let color = if temp < 40 {
             COOL
