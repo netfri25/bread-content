@@ -84,15 +84,20 @@ where
 const USAGE_BG: Color = Color(0x181818);
 const USAGE_WIDTH: u32 = 4;
 
-pub fn usage_bar(usage: f32) -> impl fmt::Display {
+pub fn general_bar(usage: f32) -> Ramp {
     let usage = usage.clamp(0., 1.);
     let height = (usage * HEIGHT) as u32;
-    let fg = Fg(USAGE_COLORS[height as usize]);
-    let bg = Bg(USAGE_BG);
-    let ramp = Ramp {
+    Ramp {
         w: USAGE_WIDTH,
         h: height,
-    };
+    }
+}
+
+pub fn usage_bar(usage: f32) -> impl fmt::Display {
+    let height = usage * HEIGHT;
+    let fg = Fg(USAGE_COLORS[height as usize]);
+    let bg = Bg(USAGE_BG);
+    let ramp = general_bar(usage);
 
     fg.chain(bg).chain(ramp)
 }
