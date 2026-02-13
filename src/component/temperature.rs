@@ -7,7 +7,7 @@ use crate::component::Fg;
 
 pub const COOL: Color = Color(0x2fb7c4);
 pub const WARM: Color = Color(0xe0c555);
-pub const HOT: Color = Color(0x3e493f);
+pub const HOT: Color = Color::RED;
 
 pub struct Temperature {
     temp_path: PathBuf,
