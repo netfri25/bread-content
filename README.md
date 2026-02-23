@@ -32,3 +32,4 @@ for more configuration options, check out `bread-content --help`
 #### Additional Features
  - reduced movements, less distraction. only the charge/discharge time disappears when battery is full. other than that, everything else stays the same size.
  - focused app title character limit
+ - selectable parameters using CLI arguments: battery, gpu, thermal, wifi
