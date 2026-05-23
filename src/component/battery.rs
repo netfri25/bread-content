@@ -56,7 +56,7 @@ impl Battery {
                 let charge_threshold: u64 = self.read_file(CHARGE_THRESHOLD)?;
 
                 let max_charge = charge_full * charge_threshold / 100;
-                let charge_left = max_charge - charge;
+                let charge_left = max_charge.saturating_sub(charge);
                 Some(calculate_time_left(charge_left, current))
             }
 
