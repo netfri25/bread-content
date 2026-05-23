@@ -120,7 +120,7 @@ type Hours = u64;
 type Minutes = u64;
 
 fn calculate_time_left(charge: u64, current: u64) -> (Hours, Minutes) {
-    let total_minutes_left = (charge * 60 / current).max(1);
+    let total_minutes_left = (charge * 60 / current).max(0);
 
     let hours = total_minutes_left / 60;
     let minutes = total_minutes_left % 60;
