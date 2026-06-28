@@ -32,7 +32,7 @@ impl fmt::Display for Wifi<'_> {
         }
 
         let quality = get_quality(self.interface).unwrap().unwrap_or_default();
-        write!(f, "{} {}", state, quality)
+        write!(f, "{} {:3}", state, quality)
     }
 }
 
