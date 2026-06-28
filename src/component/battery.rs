@@ -79,7 +79,7 @@ impl fmt::Display for Battery {
         let (state, state_color) = match status.trim() {
             "Charging" => ("+", Color::GREEN),
             "Discharging" => ("-", Color::RED),
-            "Not charging" => ("o", crate::FG),
+            "Not charging" | "Full" => ("o", crate::FG),
             _ => ("?", crate::FG),
         };
 
