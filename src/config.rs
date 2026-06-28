@@ -2,15 +2,19 @@ use clap::Parser;
 
 #[derive(Parser)]
 pub struct Config {
-    #[arg(short = 'b', long = "bat", default_value = "BAT1")]
-    pub battery: String,
+    /// which battery to use, e.g. BAT1 (in /sys/class/power_supply)
+    #[arg(short = 'b', long = "bat")]
+    pub battery: Option<String>,
 
-    #[arg(short = 'g', long = "gpu", default_value = "card0")]
-    pub gpu: String,
+    /// which GPU to use, e.g. card0 (in /sys/class/drm, depends on drm/{gpu}/device/gpu_busy_percent)
+    #[arg(short = 'g', long = "gpu")]
+    pub gpu: Option<String>,
 
-    #[arg(short = 't', long = "thermal", default_value = "hwmon0")]
-    pub thermal: String,
+    /// which thermal component to use, e.g. hwmon0 (in /sys/class/hwmon)
+    #[arg(short = 't', long = "thermal")]
+    pub thermal: Option<String>,
 
-    #[arg(short = 'w', long = "wifi", default_value = "wlp98s0")]
-    pub wifi: String,
+    /// which wifi card to use, e.g. wlan0 (in /sys/class/net)
+    #[arg(short = 'w', long = "wifi")]
+    pub wifi: Option<String>,
 }

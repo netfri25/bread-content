@@ -54,27 +54,44 @@ const fn reset_bg() -> impl fmt::Display {
 fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
 
+    let gpu = if let Some(name) = config.gpu.as_deref() {
+        Some(Gpu::new(name)?.chain(reset_fg()).chain(reset_bg()))
+    } else {
+        None
+    };
+
+    let thermal = if let Some(name) = config.thermal.as_deref() {
+        Some("  ".chain(Temperature::new(name)?).chain(reset_fg()))
+    } else {
+        None
+    };
+
+    let wifi = if let Some(name) = config.wifi.as_deref() {
+        Some(
+            "  ".chain(label("WIFI "))
+                .chain(reset_fg())
+                .chain(Wifi::new(name)?),
+        )
+    } else {
+        None
+    };
+
+    let battery = if let Some(name) = config.battery.as_deref() {
+        Some("  ".chain(label("BAT ")).chain(reset_fg().chain(Battery::new(name)?)))
+    } else {
+        None
+    };
+
     let right = AlignRight
-        .chain(Gpu::new(&config.gpu)?)
-        .chain(reset_fg())
-        .chain(reset_bg())
+        .chain(DisplayOption(gpu))
         .chain(" ")
         .chain(Cpu)
         .chain(reset_fg())
         .chain(reset_bg())
-        .chain("  ")
-        .chain(Temperature::new(&config.thermal)?)
-        .chain(reset_fg())
-        .chain("  ")
-        .chain(label("RAM ").chain(reset_fg()).chain(Memory))
-        .chain("  ")
-        .chain(
-            label("WIFI ")
-                .chain(reset_fg())
-                .chain(Wifi::new(&config.wifi)?),
-        )
-        .chain("  ")
-        .chain(label("BAT ").chain(reset_fg().chain(Battery::new(&config.battery)?)));
+        .chain(DisplayOption(thermal))
+        .chain("  ".chain(label("RAM ")).chain(reset_fg()).chain(Memory))
+        .chain(DisplayOption(wifi))
+        .chain(DisplayOption(battery));
 
     Ok(middle.chain(right))
 }

@@ -41,6 +41,24 @@ pub struct Chain<A, B> {
     b: B,
 }
 
+pub struct DisplayOption<T>(pub Option<T>);
+
+impl<T: fmt::Display> fmt::Display for DisplayOption<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(inner) = self.0.as_ref() {
+            inner.fmt(f)
+        } else {
+            Ok(())
+        }
+    }
+}
+
+impl<T> From<Option<T>> for DisplayOption<T> {
+    fn from(value: Option<T>) -> Self {
+        Self(value)
+    }
+}
+
 #[derive(Display)]
 #[display("%{{F:{_0}}}")]
 pub struct Fg(pub Color);
