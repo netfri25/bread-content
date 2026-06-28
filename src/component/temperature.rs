@@ -15,7 +15,7 @@ pub struct Temperature {
 
 impl Temperature {
     pub fn new(zone: &str) -> Result<Self, NoSuchThermalZone> {
-        let temp_path = PathBuf::from(format!("/sys/class/thermal/{zone}/temp"));
+        let temp_path = PathBuf::from(format!("/sys/class/hwmon/{zone}/temp1_input"));
         temp_path
             .exists()
             .then_some(Self { temp_path })
