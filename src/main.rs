@@ -20,8 +20,8 @@ use wayland_protocols_wlr::foreign_toplevel::v1::client::zwlr_foreign_toplevel_m
     self, ZwlrForeignToplevelManagerV1,
 };
 
-pub mod color;
-pub mod component;
+mod color;
+mod component;
 mod config;
 
 use crate::color::Color;
