@@ -77,7 +77,10 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     };
 
     let battery = if let Some(name) = config.battery.as_deref() {
-        Some("  ".chain(label("BAT ")).chain(reset_fg().chain(Battery::new(name)?)))
+        Some(
+            "  ".chain(label("BAT "))
+                .chain(reset_fg().chain(Battery::new(name)?)),
+        )
     } else {
         None
     };
