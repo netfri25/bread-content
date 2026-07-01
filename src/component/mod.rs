@@ -154,7 +154,7 @@ pub enum Error {
     Network(#[from] wifi::NoSuchInterface),
 
     #[error(transparent)]
-    Thermal(#[from] temperature::NoSuchThermalZone),
+    Thermal(#[from] temperature::ThermalZoneError),
 
     #[error(transparent)]
     Gpu(#[from] gpu::NoSuchCard),

@@ -61,7 +61,7 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     };
 
     let thermal = if let Some(name) = config.thermal.as_deref() {
-        Some("  ".chain(Temperature::new(name)?).chain(reset_fg()))
+        Some("  ".chain(Temperature::create(name)?).chain(reset_fg()))
     } else {
         None
     };

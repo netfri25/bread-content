@@ -14,12 +14,44 @@ pub struct Temperature {
 }
 
 impl Temperature {
-    pub fn new(zone: &str) -> Result<Self, NoSuchThermalZone> {
-        let temp_path = PathBuf::from(format!("/sys/class/hwmon/{zone}/temp1_input"));
-        temp_path
-            .exists()
-            .then_some(Self { temp_path })
-            .ok_or(NoSuchThermalZone)
+    pub fn create(zone: &str) -> Result<Self, ThermalZoneError> {
+        let dir = PathBuf::from("/sys/class/hwmon/");
+
+        let iter = dir
+            .read_dir()
+            .map_err(|_| ThermalZoneError::NoHwmonDirectory)?;
+
+        let mut found = None;
+
+        for entry in iter {
+            let Ok(entry) = entry else { continue };
+
+            if !entry.file_name().as_encoded_bytes().starts_with(b"hwmon") {
+                continue;
+            }
+
+            let mut path = entry.path();
+            path.push("name");
+
+            let Ok(name) = fs::read_to_string(&path) else {
+                continue
+            };
+
+            if name.trim() != zone {
+                continue
+            }
+
+            path.pop();
+            path.push("temp1_input");
+            found = Some(path);
+            break
+        }
+
+        let Some(temp_path) = found else {
+            return Err(ThermalZoneError::NoSuchThermalZone);
+        };
+
+        Ok(Self { temp_path })
     }
 }
 
@@ -49,5 +81,13 @@ impl fmt::Display for Temperature {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("no such thermal zone")]
-pub struct NoSuchThermalZone;
+pub enum ThermalZoneError {
+    #[error("no such thermal zone")]
+    NoSuchThermalZone,
+
+    #[error("/sys/class/hwmon directory does not exist")]
+    NoHwmonDirectory,
+
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+}

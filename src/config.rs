@@ -10,7 +10,7 @@ pub struct Config {
     #[arg(short = 'g', long = "gpu")]
     pub gpu: Option<String>,
 
-    /// which thermal component to use, e.g. hwmon0 (in /sys/class/hwmon)
+    /// which thermal component to use, e.g. acpitz (in /sys/class/hwmon/, and each hwmonX has /name)
     #[arg(short = 't', long = "thermal")]
     pub thermal: Option<String>,
 
