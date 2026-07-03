@@ -99,7 +99,7 @@ where
         .map_err(io::Error::other)
 }
 
-const USAGE_BG: Color = Color(0x181818);
+pub const USAGE_BG: Color = Color(0x181818);
 const USAGE_WIDTH: u32 = 4;
 
 pub fn general_bar(usage: f32) -> Ramp {
@@ -114,10 +114,9 @@ pub fn general_bar(usage: f32) -> Ramp {
 pub fn usage_bar(usage: f32) -> impl fmt::Display {
     let height = usage * HEIGHT;
     let fg = Fg(USAGE_COLORS[height as usize]);
-    let bg = Bg(USAGE_BG);
     let ramp = general_bar(usage);
 
-    fg.chain(bg).chain(ramp)
+    fg.chain(ramp)
 }
 
 const USAGE_COLORS: &[Color] = &[

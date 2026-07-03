@@ -55,7 +55,7 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
     let middle = AlignCenter.chain(reset_fg()).chain(reset_bg()).chain(Time);
 
     let gpu = if let Some(name) = config.gpu.as_deref() {
-        Some(Gpu::new(name)?.chain(reset_fg()).chain(reset_bg()))
+        Some(Bg(USAGE_BG).chain(Gpu::new(name)?))
     } else {
         None
     };
@@ -87,7 +87,9 @@ fn build_bar(config: &Config) -> Result<impl fmt::Display, component::Error> {
 
     let right = AlignRight
         .chain(DisplayOption(gpu))
+        .chain(reset_bg())
         .chain(" ")
+        .chain(Bg(USAGE_BG))
         .chain(Cpu)
         .chain(reset_fg())
         .chain(reset_bg())
